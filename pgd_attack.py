@@ -9,7 +9,7 @@ from __future__ import print_function
 
 import tensorflow as tf
 import numpy as np
-
+import os
 
 class LinfPGDAttack:
   def __init__(self, model, epsilon, k, a, random_start, loss_func):
@@ -31,8 +31,7 @@ class LinfPGDAttack:
                               off_value=0.0,
                               dtype=tf.float32)
       correct_logit = tf.reduce_sum(label_mask * model.pre_softmax, axis=1)
-      wrong_logit = tf.reduce_max((1-label_mask) * model.pre_softmax
-                                  - 1e4*label_mask, axis=1)
+      wrong_logit = tf.reduce_max((1-label_mask) * model.pre_softmax, axis=1)
       loss = -tf.nn.relu(correct_logit - wrong_logit + 50)
     else:
       print('Unknown loss function. Defaulting to cross-entropy')
@@ -40,16 +39,15 @@ class LinfPGDAttack:
 
     self.grad = tf.gradients(loss, model.x_input)[0]
 
-  def perturb(self, x_nat, y, sess):
+  def perturb(self, x_nat, y, sess, step=50):
     """Given a set of examples (x_nat, y), returns a set of adversarial
        examples within epsilon of x_nat in l_infinity norm."""
     if self.rand:
       x = x_nat + np.random.uniform(-self.epsilon, self.epsilon, x_nat.shape)
-      x = np.clip(x, 0, 1) # ensure valid pixel range
     else:
       x = np.copy(x_nat)
 
-    for i in range(self.k):
+    for i in range(step):
       grad = sess.run(self.grad, feed_dict={self.model.x_input: x,
                                             self.model.y_input: y})
 
@@ -59,6 +57,51 @@ class LinfPGDAttack:
       x = np.clip(x, 0, 1) # ensure valid pixel range
 
     return x
+
+  def perturb_transferbility(self, x_nat, x_trans, y, sess, step=50):
+    """Given a set of examples (x_nat, y), returns a set of adversarial
+       examples within epsilon of x_nat in l_infinity norm."""
+    x = np.copy(x_trans)
+
+    for i in range(step):
+      grad = sess.run(self.grad, feed_dict={self.model.x_input: x,
+                                            self.model.y_input: y})
+
+      x += self.a * np.sign(grad)
+
+      x = np.clip(x, x_nat - self.epsilon, x_nat + self.epsilon) 
+      x = np.clip(x, 0, 1) # ensure valid pixel range
+
+    return x
+  
+
+  def get_test_adv(self, sess, mnist):
+    import math
+
+    num_eval_examples = 10000
+    eval_batch_size = 1024
+    num_batches = int(math.ceil(num_eval_examples / eval_batch_size))
+
+    x_adv = [] # adv accumulator
+
+    print('Generating adversarial examples (PGD 50)', end="", flush=True)
+
+    for ibatch in range(num_batches):
+      bstart = ibatch * eval_batch_size
+      bend = min(bstart + eval_batch_size, num_eval_examples)
+      # print('batch size: {}'.format(bend - bstart))
+      print('.', end="", flush=True)
+
+      x_batch = mnist.test.images[bstart:bend, :]
+      y_batch = mnist.test.labels[bstart:bend]
+
+      x_batch_adv = self.perturb(x_batch, y_batch, sess)
+
+      x_adv.append(x_batch_adv)
+
+    print('Done!')
+    x_adv = np.concatenate(x_adv, axis=0)
+    return x_adv
 
 
 if __name__ == '__main__':
@@ -72,6 +115,9 @@ if __name__ == '__main__':
 
   with open('config.json') as config_file:
     config = json.load(config_file)
+
+  GPUID = 0
+  os.environ["CUDA_VISIBLE_DEVICES"] = str(GPUID)
 
   model_file = tf.train.latest_checkpoint(config['model_dir'])
   if model_file is None:
@@ -118,4 +164,5 @@ if __name__ == '__main__':
     path = config['store_adv_path']
     x_adv = np.concatenate(x_adv, axis=0)
     np.save(path, x_adv)
+    print('Model: {}'.format(config['model_dir']))
     print('Examples stored in {}'.format(path))

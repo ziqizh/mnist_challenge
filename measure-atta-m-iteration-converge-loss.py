@@ -21,9 +21,9 @@ parser.add_argument('--gpuid', type=int, default=0,
                     help='The ID of GPU.')                    
 parser.add_argument('--atta-largest-step', type=int, default=100,
                     help='ATTA attack step.')
-parser.add_argument('--atta-loop', type=int, default=100,
+parser.add_argument('--atta-loop', type=int, default=10,
                     help='ATTA attack measurement loop.')
-parser.add_argument('--model-dir', default='checkpoints',
+parser.add_argument('--model-dir', default='./checkpoints',
                     help='The dir of the saved model')   
 parser.add_argument('--ckpt', type=int, default=99900,
                     help='checkpoint')                        
@@ -47,7 +47,7 @@ if __name__ == '__main__':
     config = json.load(config_file)
   
   model_dir = args.model_dir
-
+  #
   # model_file = tf.train.latest_checkpoint(model_dir)
   # if model_file is None:
   #   print('No model found')
