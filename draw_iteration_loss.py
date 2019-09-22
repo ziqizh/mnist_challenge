@@ -61,10 +61,10 @@ plt.plot(x, adv_loss4, color=current_palette[3], label=label4, lw=2)
 plt.plot(x, adv_loss5, color=current_palette[4], label=label5, lw=2)
 plt.plot(x, adv_loss6, color=current_palette[5], label=label6, lw=2)
 
-plt.xlabel("Attack iteration(k,m)", fontsize=15)
-plt.ylabel("Loss after converged", fontsize=15)
+plt.xlabel("Number of PGD steps", fontsize=15)
+plt.ylabel("Adversarial Loss", fontsize=15)
 plt.tick_params(labelsize=10)
 
 plt.legend(fontsize='x-large')
 
-plt.savefig('data-pic/iteration-loss.png')
+plt.savefig('data-pic/num-steps-vs-loss.png')
