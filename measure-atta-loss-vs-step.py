@@ -98,7 +98,7 @@ if __name__ == '__main__':
           print("nat-loss: {}".format(nat_loss))
           print("per:      {}%".format(loss / nat_loss * 100))
 
-          log_file.write("{} {} {}\n".format(iteration, loss, nat_loss))
+          log_file.write("{} {} {} {}\n".format(loop_size, atta_step, loss, nat_loss))
           cur_ckpt += 300
 
 log_file.close()
