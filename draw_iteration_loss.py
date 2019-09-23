@@ -12,12 +12,12 @@ log5 = open('data-log/measure/atta-loss-vs-step-8.log')
 log6 = open('data-log/measure/atta-loss-vs-step-10.log')
 
 
-label1 = "ATTA-1"
-label2 = "ATTA-2"
-label3 = "ATTA-4"
-label4 = "ATTA-6"
-label5 = "ATTA-8"
-label6 = "ATTA-10"
+label1 = "m=1"
+label2 = "m=2"
+label3 = "m=4"
+label4 = "m=6"
+label5 = "m=8"
+label6 = "m=10"
 
 data1 = []
 data2 = []
@@ -61,8 +61,8 @@ plt.plot(x, adv_loss4, color=current_palette[3], label=label4, lw=2)
 plt.plot(x, adv_loss5, color=current_palette[4], label=label5, lw=2)
 plt.plot(x, adv_loss6, color=current_palette[5], label=label6, lw=2)
 
-plt.xlabel("Number of PGD steps", fontsize=15)
-plt.ylabel("Adversarial Loss", fontsize=15)
+plt.xlabel("Attack iterations in each epoch", fontsize=15)
+plt.ylabel("Loss Value", fontsize=15)
 plt.tick_params(labelsize=10)
 
 plt.legend(fontsize='x-large')
