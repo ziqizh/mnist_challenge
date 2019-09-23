@@ -15,7 +15,7 @@ import tensorflow as tf
 from pgd_attack import LinfPGDAttack
 
 parser = argparse.ArgumentParser(description='TF CIFAR PGD')
-parser.add_argument('--log-path',  default='./data-log/measure/atta-m-loss-default.log',
+parser.add_argument('--log-prefix',  default='./data-log/measure/atta-loss-vs-step-',
                     help='Log path.')
 parser.add_argument('--gpuid', type=int, default=0,
                     help='The ID of GPU.')                    
@@ -32,7 +32,7 @@ args = parser.parse_args()
 GPUID = args.gpuid
 os.environ["CUDA_VISIBLE_DEVICES"] = str(GPUID)
 
-log_file = open(args.log_path, 'w')
+# log_file = open(args.log_path, 'w')
 
 if __name__ == '__main__':
   import json
@@ -45,11 +45,6 @@ if __name__ == '__main__':
     config = json.load(config_file)
   
   model_dir = args.model_dir
-  #
-  # model_file = tf.train.latest_checkpoint(model_dir)
-  # if model_file is None:
-  #   print('No model found')
-  #   sys.exit()
 
   model = Model()
   attack = LinfPGDAttack(model,
@@ -66,10 +61,14 @@ if __name__ == '__main__':
   y_batch = mnist.test.labels[0:500]
   x_batch_adv = x_batch.copy()
 
+  idx_atta = 0
 
   atta_loop = [1, 5, 10, 20, 30, 40]
   with tf.Session() as sess:
     for loop_size in atta_loop:
+        path = args.log_prefix + str(atta_loop[idx_atta]) + ".log"
+        print(path)
+        log_file = open(path, 'w')
         print("Current loop size: {}".format(loop_size))
         for i in range(args.atta_largest_step):
           atta_step = i + 1
@@ -90,8 +89,8 @@ if __name__ == '__main__':
           adv_dict = {model.x_input: x_batch_adv,
                       model.y_input: y_batch}
 
-          nat_loss = sess.run(model.xent, feed_dict=nat_dict)
-          loss = sess.run(model.xent, feed_dict=adv_dict)
+          nat_loss = sess.run(model.mean_xent, feed_dict=nat_dict)
+          loss = sess.run(model.mean_xent, feed_dict=adv_dict)
 
           print("Attack iterations:     {}".format(i))
           print("adv loss:     {}".format(loss))
@@ -100,5 +99,6 @@ if __name__ == '__main__':
 
           log_file.write("{} {} {} {}\n".format(loop_size, atta_step, loss, nat_loss))
           cur_ckpt += 300
-
+        log_file.close()
+        idx_atta += 1
 log_file.close()

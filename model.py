@@ -47,6 +47,8 @@ class Model(object):
 
     self.xent = tf.reduce_sum(y_xent)
 
+    self.mean_xent = tf.reduce_mean(y_xent)
+
     self.y_pred = tf.argmax(self.pre_softmax, 1)
 
     correct_prediction = tf.equal(self.y_pred, self.y_input)
