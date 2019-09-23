@@ -67,7 +67,7 @@ if __name__ == '__main__':
   x_batch_adv = x_batch.copy()
 
 
-  atta_loop = [1, 2, 4, 6, 8, 10]
+  atta_loop = [1, 5, 10, 20, 30, 40]
   with tf.Session() as sess:
     for loop_size in atta_loop:
         print("Current loop size: {}".format(loop_size))
