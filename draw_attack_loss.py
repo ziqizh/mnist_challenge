@@ -4,16 +4,16 @@ import seaborn as sns
 
 plt.switch_backend('agg')
 
-log1 = open('data-log/measure/atta-mnist-loss-99900.log')
-log2 = open('data-log/measure/atta-mnist-loss-99600.log')
-log3 = open('data-log/measure/atta-mnist-loss-99300.log')
-log4 = open('data-log/measure/atta-mnist-loss-99000.log')
-log5 = open('data-log/measure/atta-mnist-loss-98700.log')
-log6 = open('data-log/measure/atta-mnist-loss-98400.log')
-log7 = open('data-log/measure/atta-mnist-loss-98100.log')
-log8 = open('data-log/measure/atta-mnist-loss-97800.log')
-log9 = open('data-log/measure/atta-mnist-loss-97500.log')
-log10 = open('data-log/measure/atta-mnist-loss-97200.log')
+log1 = open('data-log/measure/atta-mnist-loss-1.log')
+log2 = open('data-log/measure/atta-mnist-loss-2.log')
+log3 = open('data-log/measure/atta-mnist-loss-3.log')
+log4 = open('data-log/measure/atta-mnist-loss-4.log')
+log5 = open('data-log/measure/atta-mnist-loss-5.log')
+log6 = open('data-log/measure/atta-mnist-loss-6.log')
+log7 = open('data-log/measure/atta-mnist-loss-7.log')
+log8 = open('data-log/measure/atta-mnist-loss-8.log')
+log9 = open('data-log/measure/atta-mnist-loss-9.log')
+log10 = open('data-log/measure/atta-mnist-loss-10.log')
 
 label1 = "cpt-1"
 label2 = "cpt-2"
@@ -36,7 +36,7 @@ data7 = []
 data8 = []
 data9 = []
 data10 = []
-length = 40
+length = 50
 
 log_lines1 = log1.readlines()
 log_lines2 = log2.readlines()

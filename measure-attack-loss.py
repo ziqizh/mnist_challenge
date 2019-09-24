@@ -67,7 +67,7 @@ if __name__ == '__main__':
 
     with tf.Session() as sess:
         for i in range(args.atta_loop):
-            path = args.log_prefix + str(cur_ckpt) + ".log"
+            path = args.log_prefix + str(i + 1) + ".log"
             print(path)
             log_file = open(path, 'w')
 
@@ -89,5 +89,4 @@ if __name__ == '__main__':
             print("adv loss:     {}".format(loss))
             print("nat-loss: {}".format(nat_loss))
 
-            cur_ckpt -= 300
             log_file.close()
