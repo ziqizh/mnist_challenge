@@ -29,6 +29,8 @@ parser.add_argument('--ckpt-step', type=int, default=3000,
                     help='checkpoint')
 parser.add_argument('--max-ckpt', type=int, default=99900,
                     help='checkpoint')
+parser.add_argument('--start-ckpt', type=int, default=0,
+                    help='checkpoint')
 parser.add_argument('--batch-size', type=int, default=128,
                     help='checkpoint')
 args = parser.parse_args()
@@ -68,6 +70,7 @@ if __name__ == '__main__':
 
     ckpt_step = args.ckpt_step
     max_ckpt = args.max_ckpt
+    start_ckpt = args.start_ckpt
     batch_size = args.batch_size
 
     path = os.path.join(args.log_prefix, model_name + ".log")
@@ -75,7 +78,7 @@ if __name__ == '__main__':
     log_file = open(path, 'w')
 
     with tf.Session() as sess:
-        for cur_ckpt in range(0, max_ckpt, ckpt_step):
+        for cur_ckpt in range(start_ckpt, max_ckpt, ckpt_step):
 
             model_ckpt = os.path.join(model_dir, "checkpoint-" + str(cur_ckpt))
             print("restore: {}".format(model_ckpt))

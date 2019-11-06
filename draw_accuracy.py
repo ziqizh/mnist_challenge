@@ -24,9 +24,9 @@ if __name__ == '__main__':
 
     data1 = []
 
-    length = 34
-
     log_lines1 = log1.readlines()
+
+    length = len(log_lines1)
 
     for i in range(length):
       data1.append([eval(j) for j in log_lines1[i].split(' ')])
