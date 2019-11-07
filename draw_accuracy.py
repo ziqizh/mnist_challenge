@@ -7,6 +7,8 @@ parser = argparse.ArgumentParser(description='MNIST ACCURACY')
 
 parser.add_argument('--model-name', default='mat.pgd-40',
                     help='ATTA attack step.')
+parser.add_argument('--postfix', default='log',
+                    help='ATTA attack step.')
 
 args = parser.parse_args()
 
@@ -17,7 +19,7 @@ if __name__ == '__main__':
 
     plt.switch_backend('agg')
 
-    log1 = open('data-log/measure-accuracy/' + args.model_name + '.log')
+    log1 = open('data-log/measure-accuracy/' + args.model_name + '.' + args.postfix)
 
     label1 = args.model_name + " Natural"
     label2 = args.model_name + " Adversarial"
