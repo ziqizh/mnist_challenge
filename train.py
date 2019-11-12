@@ -142,7 +142,7 @@ with tf.Session() as sess:
         nat_acc = total_nat_corr / 10000
         # adv_acc = total_adv_corr / 10000
         print("step: {} nat_acc: {} training time: {}".format(ii, nat_acc, training_time))
-        log_f.write("{} {} {}".format(ii, nat_acc, training_time))
+        log_f.write("{} {} {}\n".format(ii, nat_acc, training_time))
     else:
         end = timer()
         training_time += end - start
