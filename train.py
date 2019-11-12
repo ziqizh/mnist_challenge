@@ -68,6 +68,9 @@ merged_summaries = tf.summary.merge_all()
 
 shutil.copy('config.json', model_dir)
 
+path = "natural-training-log.txt"
+log_f = open(path, 'w')
+
 with tf.Session() as sess:
   # Initialize the summary writer, global variables, and our time counter.
   summary_writer = tf.summary.FileWriter(model_dir, sess.graph)
@@ -79,41 +82,68 @@ with tf.Session() as sess:
     x_batch, y_batch = mnist.train.next_batch(batch_size)
 
     # Compute Adversarial Perturbations
-    start = timer()
-    x_batch_adv = attack.perturb(x_batch, y_batch, sess)
-    end = timer()
-    training_time += end - start
+    # start = timer()
+    # x_batch_adv = attack.perturb(x_batch, y_batch, sess)
+    # end = timer()
+    # training_time += end - start
 
     nat_dict = {model.x_input: x_batch,
                 model.y_input: y_batch}
 
-    adv_dict = {model.x_input: x_batch_adv,
-                model.y_input: y_batch}
+    # adv_dict = {model.x_input: x_batch_adv,
+    #             model.y_input: y_batch}
 
-    # Output to stdout
-    if ii % num_output_steps == 0:
-      nat_acc = sess.run(model.accuracy, feed_dict=nat_dict)
-      adv_acc = sess.run(model.accuracy, feed_dict=adv_dict)
-      print('Step {}:    ({})'.format(ii, datetime.now()))
-      print('    training nat accuracy {:.4}%'.format(nat_acc * 100))
-      print('    training adv accuracy {:.4}%'.format(adv_acc * 100))
-      if ii != 0:
-        print('    {} examples per second'.format(
-            num_output_steps * batch_size / training_time))
-        training_time = 0.0
+    # # Output to stdout
+    # if ii % num_output_steps == 0:
+    #   nat_acc = sess.run(model.accuracy, feed_dict=nat_dict)
+    #   # adv_acc = sess.run(model.accuracy, feed_dict=adv_dict)
+    #   print('Step {}:    ({})'.format(ii, datetime.now()))
+    #   print('    training nat accuracy {:.4}%'.format(nat_acc * 100))
+    #   # print('    training adv accuracy {:.4}%'.format(adv_acc * 100))
+    #   if ii != 0:
+    #     print('    {} examples per second'.format(
+    #         num_output_steps * batch_size / training_time))
+    #     training_time = 0.0
     # Tensorboard summaries
-    if ii % num_summary_steps == 0:
-      summary = sess.run(merged_summaries, feed_dict=adv_dict)
-      summary_writer.add_summary(summary, global_step.eval(sess))
-
-    # Write a checkpoint
-    if ii % num_checkpoint_steps == 0:
-      saver.save(sess,
-                 os.path.join(model_dir, 'checkpoint'),
-                 global_step=global_step)
+    # if ii % num_summary_steps == 0:
+    #   summary = sess.run(merged_summaries, feed_dict=adv_dict)
+    #   summary_writer.add_summary(summary, global_step.eval(sess))
 
     # Actual training step
     start = timer()
-    sess.run(train_step, feed_dict=adv_dict)
-    end = timer()
-    training_time += end - start
+    sess.run(train_step, feed_dict=nat_dict)
+
+    # Write a checkpoint
+    if ii % num_checkpoint_steps == 0:
+        saver.save(sess,
+                   os.path.join(model_dir, 'checkpoint'),
+                   global_step=global_step)
+        end = timer()
+        training_time += end - start
+        total_nat_corr = 0
+        total_adv_corr = 0
+
+        for bstart in range(0, 10000, batch_size):
+            bend = min(bstart + batch_size, 10000)
+            # print(mnist.test.images.shape)
+            x_batch = mnist.test.images[bstart:bend]
+            y_batch = mnist.test.labels[bstart:bend]
+            nat_dict = {model.x_input: x_batch,
+                        model.y_input: y_batch}
+
+            nat_corr = sess.run(model.num_correct,
+                                feed_dict=nat_dict)
+
+            # print("batch {} nat corr: {}".format(bstart, nat_corr))
+
+            total_nat_corr += nat_corr
+            # total_adv_corr += adv_corr
+
+        nat_acc = total_nat_corr / 10000
+        # adv_acc = total_adv_corr / 10000
+        print("step: {} nat_acc: {} training time: {}".format(ii, nat_acc, training_time))
+        log_f.write("{} {} {}".format(ii, nat_acc, training_time))
+    else:
+        end = timer()
+        training_time += end - start
+
