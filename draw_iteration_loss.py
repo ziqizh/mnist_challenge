@@ -4,12 +4,12 @@ import seaborn as sns
 
 plt.switch_backend('agg')
 
-log1 = open('data-log/measure/atta-loss-vs-step-1.log')
-log2 = open('data-log/measure/atta-loss-vs-step-5.log')
-log3 = open('data-log/measure/atta-loss-vs-step-10.log')
-log4 = open('data-log/measure/atta-loss-vs-step-20.log')
-log5 = open('data-log/measure/atta-loss-vs-step-30.log')
-log6 = open('data-log/measure/atta-loss-vs-step-40.log')
+log1 = open('data-log/measure/atta-loss-vs-step-1.txt')
+log2 = open('data-log/measure/atta-loss-vs-step-5.txt')
+log3 = open('data-log/measure/atta-loss-vs-step-10.txt')
+log4 = open('data-log/measure/atta-loss-vs-step-20.txt')
+log5 = open('data-log/measure/atta-loss-vs-step-30.txt')
+log6 = open('data-log/measure/atta-loss-vs-step-40.txt')
 
 
 label1 = "m=1"

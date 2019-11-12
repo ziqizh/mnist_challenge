@@ -57,8 +57,8 @@ if __name__ == '__main__':
 
     mnist = input_data.read_data_sets('MNIST_data', one_hot=False)
 
-    x_batch = mnist.train.images[0:500, :]
-    y_batch = mnist.train.labels[0:500]
+    x_batch = mnist.test.images[0:500]
+    y_batch = mnist.tset.labels[0:500]
     x_batch_adv = x_batch.copy()
 
     idx_atta = 0
