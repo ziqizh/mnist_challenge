@@ -22,7 +22,8 @@ with open('config.json') as config_file:
 
 # Setting up training parameters
 tf.set_random_seed(config['random_seed'])
-
+GPUID = 0
+os.environ["CUDA_VISIBLE_DEVICES"] = str(GPUID)
 max_num_training_steps = config['max_num_training_steps']
 num_output_steps = config['num_output_steps']
 num_summary_steps = config['num_summary_steps']
