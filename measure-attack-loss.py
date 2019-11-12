@@ -57,9 +57,7 @@ if __name__ == '__main__':
 
     mnist = input_data.read_data_sets('MNIST_data', one_hot=False)
 
-    x_batch = mnist.test.images[0:500]
-    y_batch = mnist.tset.labels[0:500]
-    x_batch_adv = x_batch.copy()
+    batch_start = 0;
 
     idx_atta = 0
 
@@ -67,6 +65,9 @@ if __name__ == '__main__':
 
     with tf.Session() as sess:
         for i in range(args.atta_loop):
+            x_batch = mnist.test.images[batch_start:batch_start+500]
+            y_batch = mnist.test.labels[batch_start:batch_start + 500]
+            x_batch_adv = x_batch.copy()
             path = args.log_prefix + str(i + 1) + ".log"
             print(path)
             log_file = open(path, 'w')
@@ -90,3 +91,4 @@ if __name__ == '__main__':
             print("nat-loss: {}".format(nat_loss))
 
             log_file.close()
+            batch_start += 500

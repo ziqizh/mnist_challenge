@@ -36,7 +36,7 @@ data7 = []
 data8 = []
 data9 = []
 data10 = []
-length = 50
+
 
 log_lines1 = log1.readlines()
 log_lines2 = log2.readlines()
@@ -48,6 +48,7 @@ log_lines7 = log7.readlines()
 log_lines8 = log8.readlines()
 log_lines9 = log9.readlines()
 log_lines10 = log10.readlines()
+length = len(log_lines1)
 for i in range(length):
   data1.append([eval(j) for j in log_lines1[i].split(' ')])
   data2.append([eval(j) for j in log_lines2[i].split(' ')])
@@ -95,4 +96,4 @@ plt.tick_params(labelsize=10)
 
 plt.legend(fontsize='x-large')
 
-plt.savefig('data-pic/multiple-checkpoints-attack-loss.png')
+plt.savefig('data-pic/multiple-checkpoints-attack-loss.pdf')

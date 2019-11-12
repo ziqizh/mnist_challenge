@@ -39,7 +39,7 @@ class LinfPGDAttack:
 
     self.grad = tf.gradients(loss, model.x_input)[0]
 
-  def perturb(self, x_nat, y, sess, step=50):
+  def perturb(self, x_nat, y, sess, log_file, step=100):
     """Given a set of examples (x_nat, y), returns a set of adversarial
        examples within epsilon of x_nat in l_infinity norm."""
     if self.rand:
@@ -55,8 +55,8 @@ class LinfPGDAttack:
 
       x = np.clip(x, x_nat - self.epsilon, x_nat + self.epsilon)
       x = np.clip(x, 0, 1)  # ensure valid pixel range
-      # print("iteration: {} loss: {}".format(i, mean_xent))
-      # log_file.write("{} {}\n".format(i + 1, mean_xent))
+      print("iteration: {} loss: {}".format(i, mean_xent))
+      log_file.write("{} {}\n".format(i + 1, mean_xent))
 
 
     return x
